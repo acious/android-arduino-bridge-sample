@@ -8,7 +8,7 @@ Sample Android app that relays messages between ProtoPie and Arduino.
 
 In the setup() function, set the baudrate to 9600.
 
-```
+```C
 Serial.begin(9600);
 ```
 
@@ -16,7 +16,7 @@ Serial.begin(9600);
 
 Call Serial.print with a message enclosed by '<' and '>'
 
-```
+```C
 Serial.print("<MESSAGE1>");
 ```
 
@@ -29,7 +29,7 @@ When this response is executed, you can receive a messageId with Serial.read() o
 
 # Sample Arduino sketch
 
-```
+```C
 void setup() {
   pinMode(13, OUTPUT);
   pinMode(8, INPUT);
