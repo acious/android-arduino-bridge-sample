@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MAX_CONSOLE_LINES = 10;
     private static final int REQUEST_ENABLE_BT = 100;
     private static final String TAG = "MainActivity";
+    private static final int TIC_UNIT = 3;
 
     private TextView console;
     private ProgressBar progressBar;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private OutputStream mBLEOutputStream;
     private InputStream mBLEInputStream;
     private byte b;
+    private int mSameCount = 0;
+    private String mSavedDataString;
 
     public static void sendToConsole(Context context, String message) {
         Intent intent = new Intent(ACTION_CONSOLE);
@@ -124,8 +127,24 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder builder = new StringBuilder();
         builder.append(Character.valueOf((char) (data & 0xFF)));
 
-        writeToConsole(builder.toString());
-        ProtoPieUtils.sendToProtoPie(this, builder.toString());
+        String dataString = builder.toString();
+
+        if (dataString.equals("A") || dataString.equals("B")) {
+            if (dataString.equals(mSavedDataString)) {
+                mSameCount++;
+                if (mSameCount == TIC_UNIT) {
+                    writeToConsole(builder.toString());
+                    ProtoPieUtils.sendToProtoPie(this, builder.toString());
+                    mSameCount = 0;
+                }
+            } else {
+                mSavedDataString = dataString;
+                mSameCount = 0;
+            }
+        } else {
+            writeToConsole(builder.toString());
+            ProtoPieUtils.sendToProtoPie(this, builder.toString());
+        }
     }
 
     private void connectToBLEDevice() {
